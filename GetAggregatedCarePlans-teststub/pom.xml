@@ -38,7 +38,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
       <version>${project.version}</version>
       <classifier>core</classifier>
     </dependency>
-	<!--
     <dependency>
       <groupId>se.skltp.agp</groupId>
       <artifactId>agp-core</artifactId>
@@ -49,7 +48,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
       <artifactId>agp-test-common</artifactId>
       <version>${skltp.agp.version}</version>
     </dependency>
-	-->
   </dependencies>
 
   <build>
