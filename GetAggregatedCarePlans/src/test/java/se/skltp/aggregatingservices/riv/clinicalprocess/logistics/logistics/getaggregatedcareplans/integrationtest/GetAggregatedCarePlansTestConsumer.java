@@ -28,7 +28,7 @@ public class GetAggregatedCarePlansTestConsumer extends AbstractTestConsumer<Get
            = new GetAggregatedCarePlansTestConsumer(serviceAddress, SAMPLE_SENDER_ID, SAMPLE_ORIGINAL_CONSUMER_HSAID);
         Holder<GetCarePlansResponseType> responseHolder = new Holder<GetCarePlansResponseType>();
         Holder<ProcessingStatusType> processingStatusHolder = new Holder<ProcessingStatusType>();
-        consumer.callService("logical-adress", personnummer, processingStatusHolder, responseHolder);
+        consumer.callService("logical-address", personnummer, processingStatusHolder, responseHolder);
         log.info("Returned {} care plans ", responseHolder.value.getCarePlan().size());
     }
 

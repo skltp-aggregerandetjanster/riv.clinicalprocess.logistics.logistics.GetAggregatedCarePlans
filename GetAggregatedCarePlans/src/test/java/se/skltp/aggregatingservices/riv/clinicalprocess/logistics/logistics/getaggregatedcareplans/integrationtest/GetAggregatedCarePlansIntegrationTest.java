@@ -178,8 +178,10 @@ public class GetAggregatedCarePlansIntegrationTest extends AbstractAggregateInte
 
         for (int i = 0; i < testData.length; i++) {
             CarePlanType responseElement = response.getCarePlan().get(i);
+            assertNotNull(responseElement.getCarePlanHeader());
+            assertNotNull(responseElement.getCarePlanHeader().getPatientId());
             assertEquals(registeredResidentId, responseElement.getCarePlanHeader().getPatientId().getId());
-
+            assertNotNull(responseElement.getCarePlanHeader());
             assertEquals(testData[i].getExpectedBusinessObjectId(), responseElement.getCarePlanHeader().getDocumentId());
             assertEquals(testData[i].getExpectedLogicalAddress(), responseElement.getCarePlanHeader().getSourceSystemHSAId());
         }
