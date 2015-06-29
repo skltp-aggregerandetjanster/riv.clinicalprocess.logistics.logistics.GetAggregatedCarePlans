@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.util.ThreadSafeSimpleDateFormat;
@@ -62,7 +63,9 @@ public class RequestListFactoryImpl implements RequestListFactory {
         List<String> originalRequestCareUnitHSAIds = originalGetCarePlansRequest.getCareUnitHSAId();
         for (EngagementType inEng : inEngagements) {
             // Filter
-            if (isBetween(reqFrom, reqTo, inEng.getMostRecentContent()) && isPartOf(originalRequestCareUnitHSAIds, inEng.getLogicalAddress())) {
+            if (mostRecentContentIsBetween(reqFrom, reqTo, inEng.getMostRecentContent()) 
+                    && 
+                isPartOf(originalRequestCareUnitHSAIds, inEng.getLogicalAddress())) {
                 // Add pdlUnit to source system
                 log.debug("Add source system: {} for PDL unit: {}", inEng.getSourceSystem(), inEng.getLogicalAddress());
                 addPdlUnitToSourceSystem(sourceSystem_pdlUnitList_map, inEng.getSourceSystem(), inEng.getLogicalAddress());
@@ -107,17 +110,25 @@ public class RequestListFactoryImpl implements RequestListFactory {
         }
     }
 
-    boolean isBetween(Date from, Date to, String tsStr) {
-        log.debug("Is {} between {} and ", new Object[] { tsStr, from, to });
+    boolean mostRecentContentIsBetween(Date from, Date to, String mostRecentContentTimestamp) {
+        if (mostRecentContentTimestamp == null) {
+            log.error("mostRecentContent - timestamp string is null");
+            return true;
+        }
+        if (StringUtils.isBlank(mostRecentContentTimestamp)) {
+            log.error("mostRecentContent - timestamp string is blank");
+            return true;
+        }
+        log.debug("Is {} between {} and ", new Object[] { mostRecentContentTimestamp, from, to });
         try {
-            Date ts = df.parse(tsStr);
+            Date ts = df.parse(mostRecentContentTimestamp);
             if (from != null && from.after(ts))
                 return false;
             if (to != null && to.before(ts))
                 return false;
             return true;
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to parse most recent content timestamp " + mostRecentContentTimestamp,e);
         }
     }
 
