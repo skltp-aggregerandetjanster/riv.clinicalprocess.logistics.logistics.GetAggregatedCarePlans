@@ -54,7 +54,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
               <sourceRoot>${schema.gen.src.dir}</sourceRoot>
               <wsdlOptions>
                 <wsdlOption>
-                  <wsdl>${schema.path}/td_clinicalprocess_logistics_logistics_3.0_RC3/interactions/GetCarePlansInteraction/GetCarePlansInteraction_2.0_RIVTABP21.wsdl</wsdl>
+                  <wsdl>${schema.path}/clinicalprocess_logistics_logistics_3.0/interactions/GetCarePlansInteraction/GetCarePlansInteraction_2.0_RIVTABP21.wsdl</wsdl>
                   <extraargs>
                     <extraarg>-validate</extraarg>
                     <extraarg>-p</extraarg>

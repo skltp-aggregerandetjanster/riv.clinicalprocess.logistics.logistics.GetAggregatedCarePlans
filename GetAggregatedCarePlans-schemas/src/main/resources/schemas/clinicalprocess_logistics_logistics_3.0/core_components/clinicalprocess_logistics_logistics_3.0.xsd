@@ -51,24 +51,6 @@
     </xs:complexType>
 
     <xs:complexType name="CareContactBodyType">
-        <xs:annotation>
-            <xs:documentation>
-                careContactCode:
-                    Typ av vård- och omsorgskontakt.
-                careContactReason:
-                    Text som beskriver orsaken till vård- och omsorgskontakt som 
-                    vård- och omsorgstagaren själv eller dess företrädare anger.
-                careContactOrgUnit:
-                    Den enhet som kontakt utfördes vid
-	            careContactTimePeriod:
-	                    För besök sätts sluttidpunken till samma tid som anges som starttidpunkt.
-						För planerade kontakter sätts ingen sluttidpunkt.
-						Pågående vårdtillfälle ska anges på samma sätt som en planerad vårdkontakt, 
-						dvs med angivet startdatum, men utan slutdatum.				
-                careContactStatus:
-                    Status på vårdkontakten enligt kodverk ur NPÖ RIV-spec 2.2.
-            </xs:documentation>
-        </xs:annotation>
         <xs:sequence>
             <xs:element name="careContactCode" type="tns:CVType" minOccurs="0"/>
             <xs:element name="careContactReason" type="xs:string" minOccurs="0"/>
@@ -82,10 +64,6 @@
     </xs:complexType>
 
     <xs:complexType name="CareServiceBodyType">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
         <xs:sequence>
             <xs:element name="performerHealthCareUnit" type="tns:IIType" minOccurs="1"/>
             <xs:element name="performerHealthCareProfessional" type="tns:IIType" minOccurs="0"/>
@@ -99,10 +77,6 @@
     </xs:complexType>
 
     <xs:complexType name="CarePlanBodyType">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
         <xs:sequence>
             <xs:element name="content" type="tns:MultimediaType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="participatingCareUnitHSAId" type="tns:IIType" minOccurs="0"
@@ -113,31 +87,7 @@
     </xs:complexType>
 
     <xs:complexType name="PatientSummaryHeaderType">
-        <xs:annotation>
-            <xs:documentation>
-                careContactId: 
-                    Vårdkontaktens identitet som är unik inom källsystemet
-                sourceSystemHSAId:
-                    HSAId för det system som dokumentet är skapat i.
-                documentTime: 
-                    Tid då vård- eller omsorgskontakten registrerades
-                patientId: 
-                    Patientens ID (enligt PatientIdType). 
-					type sätts till OID för typ av identifierare. 
-					För personnummer ska Skatteverkets personnummer (1.2.752.129.2.1.3.1).
-					För samordningsnummer ska Skatteverkets samordningsnummer (1.2.752.129.2.1.3.3).
-					För reservnummer används lokalt definierade reservnummet, exempelvis SLL reservnummer (1.2.752.97.3.1.3)
-
-                accountableHealthcareProfessional
-                    Hälso- och sjukvårdsperson som ansvarar för vårdkontakten.
-				accountableHealthcareProfessionalOrgUnit
-					Organisationsenhet för vård- och omsorgspersonens uppdrag i samband med vårdkontakten.
-                approvedForPatient:
-                    Anger om information får delas till patient. Värdet sätts i 
-                    sådant fall till true, i annat fall till false.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
+       <xs:sequence>
             <xs:element name="documentId" type="xs:string"/>
             <xs:element name="sourceSystemHSAId" type="tns:HSAIdType"/>
             <xs:element name="documentTitle" type="xs:string" minOccurs="0" maxOccurs="1"/>
@@ -154,24 +104,7 @@
     </xs:complexType>
 
     <xs:complexType name="HealthcareProfessionalType">
-        <xs:annotation>
-            <xs:documentation>
-				Information om hälso- och omsorgspesonal
-			
-				healthcareProfessionalHSAId: 
-					HSA-id för vård- och omsorgspersonal 
-				healthcareProfessionalName
-					Namn på vård- och omsorgspersonal
-				healthcareProfessionalRoleCode: 
-					Information om personens befattning. Om möjligt skall KV Befattning (OID 1.2.752.129.2.2.1.4), se 
-					http://www.inera.se/Documents/TJANSTER_PROJEKT/Katalogtjanst_HSA/Innehall/hsa_innehall_befattning.pdf  
-				healthcareProfessionalOrgUnit: 
-					HSA-id för PDL-enhet som vård- och omsorgspersonen är uppdragstagare för
-				healthcareProfessionalCareUnitHSAId: 
-					HSA-id för vårdgivaren, som är vårdgivare för den enhet som författaren är uppdragstagare för
-			</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
+       <xs:sequence>
             <xs:element name="authorTime" type="tns:TimeStampType"/>
             <xs:element minOccurs="0" name="healthcareProfessionalHSAId" type="tns:HSAIdType"/>
             <xs:element name="healthcareProfessionalName" type="xs:string" minOccurs="0"/>
@@ -186,25 +119,7 @@
     </xs:complexType>
 
     <xs:complexType name="OrgUnitType">
-        <xs:annotation>
-            <xs:documentation>
-				Information om en organisationsenhet
-
-				orgUnitHsaId: 
-					HSA-id för organisationsenhet
-				orgUnitName
-					Namn på organisationsenhet
-				orgUnitTelecom: 
-					Telefon till organisationsenhet
-				orgUnitEmail: 
-					Epost till enhet
-				orgUnitAddress: 
-					Postadress till enhet
-				orgUnitLocation: 
-					Text som anger namnet på plats eller ort för enhetens eller funktionens fysiska placering
-			</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
+       <xs:sequence>
             <xs:element name="orgUnitHSAId" type="tns:HSAIdType" minOccurs="0"/>
             <xs:element name="orgUnitName" type="xs:string" minOccurs="0"/>
             <xs:element name="orgUnitTelecom" type="xs:string" minOccurs="0"/>
@@ -223,18 +138,7 @@
     -->
 
     <xs:complexType name="DatePeriodType">
-        <xs:annotation>
-            <xs:documentation>
-                Används för att specificera ett datumintervall
-                med hjälp av start- och slutdatum.
-                
-                start: 
-                    Startdatum på formatet ÅÅÅÅMMDD
-                end: 
-                    Slutdatum på formatet ÅÅÅÅMMDD
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
+       <xs:sequence>
             <xs:element name="start" type="tns:DateType"/>
             <xs:element name="end" type="tns:DateType"/>
             <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -242,20 +146,14 @@
     </xs:complexType>
 
     <xs:complexType name="PartialDateType">
-        <xs:annotation>
-            <xs:documentation>YYYY, YYYYMM or YYYYMMDD</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
+       <xs:sequence>
             <xs:element name="format" type="codes:DateTypeFormatEnum"/>
             <xs:element name="value" type="tns:PartialDateValueType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:simpleType name="PartialDateValueType">
-        <xs:annotation>
-            <xs:documentation>YYYY, YYYYMM or YYYYMMDD</xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:string">
+       <xs:restriction base="xs:string">
             <xs:pattern
                 value="-?([1-9][0-9]{3}|0[0-9]{3})((0[1-9]|1[0-2])((0[1-9]|[12][0-9]|3[01]))?)?"/>
         </xs:restriction>
