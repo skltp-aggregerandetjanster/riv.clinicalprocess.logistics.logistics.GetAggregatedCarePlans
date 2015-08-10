@@ -1,17 +1,13 @@
 package se.skltp.aggregatingservices.riv.clinicalprocess.logistics.logistics.getaggregatedcareplans;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.soitoolkit.commons.mule.util.ThreadSafeSimpleDateFormat;
 
 import riv.clinicalprocess.logistics.logistics.getcareplansresponder.v2.GetCarePlansType;
 import se.skltp.agp.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
@@ -22,7 +18,6 @@ import se.skltp.agp.service.api.RequestListFactory;
 public class RequestListFactoryImpl implements RequestListFactory {
 
     private static final Logger log = LoggerFactory.getLogger(RequestListFactoryImpl.class);
-    private static final ThreadSafeSimpleDateFormat df = new ThreadSafeSimpleDateFormat("yyyyMMddhhmmss");
 
     /**
      * Filtrera svarsposter från i EI (ei-engagement) baserat parametrar i GetCarePlans requestet (req). Följande villkor 
@@ -46,13 +41,6 @@ public class RequestListFactoryImpl implements RequestListFactory {
 
         GetCarePlansType originalGetCarePlansRequest = (GetCarePlansType) qo.getExtraArg();
 
-        Date reqFrom = null;
-        Date reqTo = null;
-        if (originalGetCarePlansRequest.getDatePeriod() != null) {
-            reqFrom = parseTs(originalGetCarePlansRequest.getDatePeriod().getStart());
-            reqTo = parseTs(originalGetCarePlansRequest.getDatePeriod().getEnd());
-        }
-
         FindContentResponseType eiResp = (FindContentResponseType) findContentResponse;
         List<EngagementType> inEngagements = eiResp.getEngagement();
 
@@ -62,10 +50,7 @@ public class RequestListFactoryImpl implements RequestListFactory {
 
         List<String> originalRequestCareUnitHSAIds = originalGetCarePlansRequest.getCareUnitHSAId();
         for (EngagementType inEng : inEngagements) {
-            // Filter
-            if (mostRecentContentIsBetween(reqFrom, reqTo, inEng.getMostRecentContent()) 
-                    && 
-                isPartOf(originalRequestCareUnitHSAIds, inEng.getLogicalAddress())) {
+            if (isPartOf(originalRequestCareUnitHSAIds, inEng.getLogicalAddress())) {
                 // Add pdlUnit to source system
                 log.debug("Add source system: {} for PDL unit: {}", inEng.getSourceSystem(), inEng.getLogicalAddress());
                 addPdlUnitToSourceSystem(sourceSystem_pdlUnitList_map, inEng.getSourceSystem(), inEng.getLogicalAddress());
@@ -96,40 +81,6 @@ public class RequestListFactoryImpl implements RequestListFactory {
 
         log.debug("Transformed payload: {}", requestList);
         return requestList;
-    }
-
-    Date parseTs(String ts) {
-        try {
-            if (ts == null || ts.length() == 0) {
-                return null;
-            } else {
-                return df.parse(ts);
-            }
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    boolean mostRecentContentIsBetween(Date from, Date to, String mostRecentContentTimestamp) {
-        if (mostRecentContentTimestamp == null) {
-            log.error("mostRecentContent - timestamp string is null");
-            return true;
-        }
-        if (StringUtils.isBlank(mostRecentContentTimestamp)) {
-            log.error("mostRecentContent - timestamp string is blank");
-            return true;
-        }
-        log.debug("Is {} between {} and ", new Object[] { mostRecentContentTimestamp, from, to });
-        try {
-            Date ts = df.parse(mostRecentContentTimestamp);
-            if (from != null && from.after(ts))
-                return false;
-            if (to != null && to.before(ts))
-                return false;
-            return true;
-        } catch (ParseException e) {
-            throw new RuntimeException("Failed to parse most recent content timestamp " + mostRecentContentTimestamp,e);
-        }
     }
 
     boolean isPartOf(List<String> careUnitIdList, String careUnit) {
