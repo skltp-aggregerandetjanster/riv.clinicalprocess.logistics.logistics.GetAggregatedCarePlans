@@ -63,19 +63,9 @@ public class RequestListFactoryImpl implements RequestListFactory {
         List<Object[]> requestList = new ArrayList<Object[]>();
 
         for (Entry<String, List<String>> entry : sourceSystem_pdlUnitList_map.entrySet()) {
-
             String sourceSystem = entry.getKey();
-            List<String> sourceSystemLogicalAddressList = entry.getValue();
-
-            GetCarePlansType newGetCarePlansRequest = originalGetCarePlansRequest;
-            newGetCarePlansRequest.setSourceSystemHSAId(null);
-            newGetCarePlansRequest.getCareUnitHSAId().clear();
-            newGetCarePlansRequest.getCareUnitHSAId().addAll(sourceSystemLogicalAddressList);
-
-            Object[] reqArr = new Object[] { sourceSystem, newGetCarePlansRequest };
-
-            log.info("Calling source system using logical address {} for subject of care id {}", 
-                    sourceSystem, originalGetCarePlansRequest.getPatientId().getId());
+            log.info("Calling source system using logical address {} for subject of care id {}", sourceSystem, originalGetCarePlansRequest.getPatientId() == null ? null : originalGetCarePlansRequest.getPatientId().getId());
+            Object[] reqArr = new Object[] { sourceSystem, originalGetCarePlansRequest };
             requestList.add(reqArr);
         }
 
