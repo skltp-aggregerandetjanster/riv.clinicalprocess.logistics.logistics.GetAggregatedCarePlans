@@ -1,10 +1,9 @@
 package se.skltp.aggregatingservices.riv.clinicalprocess.logistics.logistics.getaggregatedcareplans;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,72 +19,38 @@ public class RequestListFactoryImpl implements RequestListFactory {
     private static final Logger log = LoggerFactory.getLogger(RequestListFactoryImpl.class);
 
     /**
-     * Filtrera svarsposter från i EI (ei-engagement) baserat parametrar i GetCarePlans requestet (req). Följande villkor 
-     * måste vara sanna för att en svarspost från EI skall tas med i svaret:
-     * 
-     * 1. req.fromDate <= ei-engagement.mostRecentContent <= req.toDate 
-     * 2. req.careUnitId.size == 0 or req.careUnitId.contains(ei-engagement.logicalAddress)
-     * 
-     * Svarsposter från EI som passerat filtreringen grupperas på fältet sourceSystem samt postens fält logicalAddress (= PDL-enhet) 
-     * samlas i listan careUnitId per varje sourceSystem
-     * 
-     * Ett anrop görs per funnet sourceSystem med följande värden i anropet:
-     * 
-     * 1. logicalAddress  = sourceSystem (systemadressering) 
-     * 2. subjectOfCareId = original-request.subjectOfCareId 
-     * 3. careUnitId      = listan av PDL-enheter som returnerats från EI för aktuellt source system) 
-     * 4. fromDate        = original-request.fromDate 
-     * 5. toDate          = original-request.toDate
+     * Engagement index has responded with a list of engagements.
+     * Retrieve source system hsa id from the engagement and prepare a list of source systems together with the original request.
+     * This list will be split by mule and sent to each source system.
      */
-    public List<Object[]> createRequestList(QueryObject qo, FindContentResponseType findContentResponse) {
+    public List<Object[]> createRequestList(QueryObject qo, FindContentResponseType src) {
+        
+        List<Object[]> requestsToBeSentToSourceSystems = new ArrayList<Object[]>();
 
-        GetCarePlansType originalGetCarePlansRequest = (GetCarePlansType) qo.getExtraArg();
-
-        FindContentResponseType eiResp = (FindContentResponseType) findContentResponse;
-        List<EngagementType> inEngagements = eiResp.getEngagement();
-
-        log.info("Got {} hits in the engagement index", inEngagements.size());
-
-        Map<String, List<String>> sourceSystem_pdlUnitList_map = new HashMap<String, List<String>>();
-
-        List<String> originalRequestCareUnitHSAIds = originalGetCarePlansRequest.getCareUnitHSAId();
-        for (EngagementType inEng : inEngagements) {
-            if (isPartOf(originalRequestCareUnitHSAIds, inEng.getLogicalAddress())) {
-                // Add pdlUnit to source system
-                log.debug("Add source system: {} for PDL unit: {}", inEng.getSourceSystem(), inEng.getLogicalAddress());
-                addPdlUnitToSourceSystem(sourceSystem_pdlUnitList_map, inEng.getSourceSystem(), inEng.getLogicalAddress());
+        FindContentResponseType findContentResponse = (FindContentResponseType) src;
+        List<EngagementType> engagements = findContentResponse.getEngagement();
+        log.debug("Got {} hits in the engagement index", engagements.size());
+        if (!engagements.isEmpty()) {
+            Set<String> sourceSystems = new HashSet<String>(); // set of unique source system hsa ids
+            
+            // remove duplicate sourceSystems
+            for (EngagementType engagement : engagements) {
+                sourceSystems.add(engagement.getSourceSystem());
             }
+    
+            log.debug("Preparing to call {} different source systems", sourceSystems.size());
+            GetCarePlansType request = (GetCarePlansType) qo.getExtraArg(); // consumer's original request
+    
+            for (String sourceSystem : sourceSystems) {
+                log.info("Preparing to call source system {} for subject of care id {}", sourceSystem, request.getPatientId() == null ? null : request.getPatientId().getId());
+                // the original request will sent unchanged to each sourceSystem
+                Object[] reqArr = new Object[] { sourceSystem, request };
+                requestsToBeSentToSourceSystems.add(reqArr);
+            }
+    
+            log.debug("Transformed payload: {}", requestsToBeSentToSourceSystems);
         }
-
-        // Prepare the result of the transformation as a list of request-payloads,
-        // one payload for each unique logical-address (e.g. source system since we are using system addressing),
-        // each payload built up as an object-array according to the JAX-WS signature for the method in the service interface
-        List<Object[]> requestList = new ArrayList<Object[]>();
-
-        for (Entry<String, List<String>> entry : sourceSystem_pdlUnitList_map.entrySet()) {
-            String sourceSystem = entry.getKey();
-            log.info("Calling source system using logical address {} for subject of care id {}", sourceSystem, originalGetCarePlansRequest.getPatientId() == null ? null : originalGetCarePlansRequest.getPatientId().getId());
-            Object[] reqArr = new Object[] { sourceSystem, originalGetCarePlansRequest };
-            requestList.add(reqArr);
-        }
-
-        log.debug("Transformed payload: {}", requestList);
-        return requestList;
+        return requestsToBeSentToSourceSystems;
     }
-
-    boolean isPartOf(List<String> careUnitIdList, String careUnit) {
-        log.debug("Check presence of {} in {}", careUnit, careUnitIdList);
-        if (careUnitIdList == null || careUnitIdList.size() == 0)
-            return true;
-        return careUnitIdList.contains(careUnit);
-    }
-
-    void addPdlUnitToSourceSystem(Map<String, List<String>> sourceSystem_pdlUnitList_map, String sourceSystem, String pdlUnitId) {
-        List<String> careUnitList = sourceSystem_pdlUnitList_map.get(sourceSystem);
-        if (careUnitList == null) {
-            careUnitList = new ArrayList<String>();
-            sourceSystem_pdlUnitList_map.put(sourceSystem, careUnitList);
-        }
-        careUnitList.add(pdlUnitId);
-    }
+    
 }
