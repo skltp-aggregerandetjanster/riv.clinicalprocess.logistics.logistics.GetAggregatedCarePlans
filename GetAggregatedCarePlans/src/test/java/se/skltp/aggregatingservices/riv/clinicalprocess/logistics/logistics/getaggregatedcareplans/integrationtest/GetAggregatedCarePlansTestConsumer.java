@@ -25,16 +25,16 @@ public class GetAggregatedCarePlansTestConsumer extends AbstractTestConsumer<Get
         String personnummer = TEST_RR_ID_ONE_HIT;
 
         GetAggregatedCarePlansTestConsumer consumer 
-           = new GetAggregatedCarePlansTestConsumer(serviceAddress, SAMPLE_SENDER_ID, SAMPLE_ORIGINAL_CONSUMER_HSAID);
+           = new GetAggregatedCarePlansTestConsumer(serviceAddress, SAMPLE_SENDER_ID, SAMPLE_ORIGINAL_CONSUMER_HSAID, SAMPLE_CORRELATION_ID);
         Holder<GetCarePlansResponseType> responseHolder = new Holder<GetCarePlansResponseType>();
         Holder<ProcessingStatusType> processingStatusHolder = new Holder<ProcessingStatusType>();
         consumer.callService("logical-address", personnummer, processingStatusHolder, responseHolder);
         log.info("Returned {} care plans ", responseHolder.value.getCarePlan().size());
     }
 
-    public GetAggregatedCarePlansTestConsumer(String serviceAddress, String senderId, String originalConsumerHsaId) {
+    public GetAggregatedCarePlansTestConsumer(String serviceAddress, String senderId, String originalConsumerHsaId, String correlationId) {
         // Setup a web service proxy for communication using HTTPS with mutual authentication
-        super(GetCarePlansResponderInterface.class, serviceAddress, senderId, originalConsumerHsaId);
+        super(GetCarePlansResponderInterface.class, serviceAddress, senderId, originalConsumerHsaId, correlationId);
     }
 
     public void callService(String logicalAddress, String registeredResidentId, Holder<ProcessingStatusType> processingStatusHolder,
