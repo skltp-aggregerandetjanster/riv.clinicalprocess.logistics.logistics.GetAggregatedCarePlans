@@ -41,7 +41,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 
     <dependency>
       <groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-      <artifactId>soitoolkit-mule-3.7.0-dependencies</artifactId>
+      <artifactId>soitoolkit-mule-${mule.version}-dependencies</artifactId>
       <version>${soitoolkit.version}</version>
       <type>pom</type>
     </dependency>
