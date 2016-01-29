@@ -2,9 +2,10 @@ package se.skltp.aggregatingservices.riv.clinicalprocess.logistics.logistics.get
 
 trait CommonParameters {
   val serviceName:String     = "CarePlans"
-  val urn:String             = "urn:riv:clinicalprocess:logistics:logistics:GetCarePlansResponder:2"
+  val urn:String             = "urn:riv:clinicalprocess:logistics:GetCarePlansResponder:2"
   val responseElement:String = "GetCarePlansResponse"
   val responseItem:String    = "carePlan"
+  val responseItemUrn:String = "urn:riv:clinicalprocess:logistics:logistics:GetCarePlansResponder:2"
   var baseUrl:String         = if (System.getProperty("baseUrl") != null && !System.getProperty("baseUrl").isEmpty()) {
                                    System.getProperty("baseUrl")
                                } else {
