@@ -3,3 +3,7 @@
 .settings
 target
 .mule/
+
+# intellij
+.idea
+*.iml
