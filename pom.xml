@@ -21,9 +21,9 @@
   </properties>
 
     <scm>
-			<url/>
-			<connection/>
-			<developerConnection/>
+      <connection>scm:git:https://github.com:443/skltp-aggregerandetjanster/riv.clinicalprocess.logistics.logistics.GetAggregatedCarePlans.git</connection>
+      <developerConnection>scm:git:https://github.com:443/skltp-aggregerandetjanster/riv.clinicalprocess.logistics.logistics.GetAggregatedCarePlans.git</developerConnection>
+      <url>https://github.com/skltp-aggregerandetjanster/riv.clinicalprocess.logistics.logistics.GetAggregatedCarePlans.git</url>
       <tag>HEAD</tag>
   	</scm>
 
