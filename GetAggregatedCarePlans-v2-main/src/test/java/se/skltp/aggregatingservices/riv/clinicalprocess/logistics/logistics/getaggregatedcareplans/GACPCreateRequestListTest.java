@@ -1,16 +1,13 @@
 package se.skltp.aggregatingservices.riv.clinicalprocess.logistics.logistics.getaggregatedcareplans;
 
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
+import org.junit.jupiter.api.BeforeAll;
 import riv.clinicalprocess.logistics.logistics.getcareplansresponder.v2.GetCarePlansResponseType;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.tests.CreateFindContentTest;
-import se.skltp.aggregatingservices.data.TestDataGenerator;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 public class GACPCreateRequestListTest extends CreateFindContentTest {
 
   private static GACPAgpServiceConfiguration configuration = new GACPAgpServiceConfiguration();
@@ -22,7 +19,7 @@ public class GACPCreateRequestListTest extends CreateFindContentTest {
     super(testDataGenerator, agpServiceFactory, configuration);
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void before() {
     configuration = new GACPAgpServiceConfiguration();
     agpServiceFactory = new GACPAgpServiceFactoryImpl();
