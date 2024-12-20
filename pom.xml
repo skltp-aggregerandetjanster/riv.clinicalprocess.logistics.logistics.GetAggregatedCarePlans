@@ -24,7 +24,7 @@
     <url>https://github.com/skltp-aggregerandetjanster/riv.clinicalprocess.logistics.logistics.GetAggregatedCarePlans.git</url>
   </scm>
   <properties>
-    <agp-parent.version>4.0.0</agp-parent.version>
+    <agp-parent.version>4.0.1</agp-parent.version>
   </properties>
   <dependencies>
     <dependency>
